@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "test",
+  "title": "Test",
+  "description": "A test component.",
+  "dependencies": [
+    "lucide-react"
+  ],
+  "files": [
+    {
+      "path": "registry/components/ui/test.tsx",
+      "content": "\"use client\";\n\nfunction Test(\n  props: React.PropsWithChildren<{\n    children: React.ReactNode;\n  }>,\n) {\n  return <div>{props.children}</div>;\n}\n\nexport { Test };\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

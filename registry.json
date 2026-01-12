@@ -15,6 +15,19 @@
           "type": "registry:ui"
         }
       ]
+    },
+    {
+      "name": "carousel",
+      "type": "registry:ui",
+      "title": "Carousel",
+      "description": "A lightweight carousel component with CSS transitions.",
+      "dependencies": ["lucide-react"],
+      "files": [
+        {
+          "path": "registry/components/ui/carousel.tsx",
+          "type": "registry:ui"
+        }
+      ]
     }
   ]
 }

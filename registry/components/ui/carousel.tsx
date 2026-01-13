@@ -1,29 +1,25 @@
 "use client";
-import {
-  Children,
-  cloneElement,
-  isValidElement,
-  ReactNode,
-  createContext,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-  useCallback,
-} from "react";
 import { cn } from "@/lib/utils";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  Children,
+  ReactNode,
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 export type CarouselContextType = {
   index: number;
-  setIndex: (newIndex: number) => void;
+  setIndex: (newIndex: number | ((prev: number) => number)) => void;
   itemsCount: number;
   setItemsCount: (newItemsCount: number) => void;
   disableDrag: boolean;
   loop: boolean;
-  infiniteLoop: boolean;
-  onNextRef: React.RefObject<(() => void) | undefined>;
-  onPrevRef: React.RefObject<(() => void) | undefined>;
 };
 
 const CarouselContext = createContext<CarouselContextType | undefined>(
@@ -44,7 +40,6 @@ export type CarouselProviderProps = {
   onIndexChange?: (newIndex: number) => void;
   disableDrag?: boolean;
   loop?: boolean;
-  infiniteLoop?: boolean;
 };
 
 function CarouselProvider({
@@ -53,36 +48,44 @@ function CarouselProvider({
   onIndexChange,
   disableDrag = false,
   loop = false,
-  infiniteLoop = false,
 }: CarouselProviderProps) {
   const [index, setIndex] = useState<number>(initialIndex);
   const [itemsCount, setItemsCount] = useState<number>(0);
-  const onNextRef = useRef<(() => void) | undefined>(undefined);
-  const onPrevRef = useRef<(() => void) | undefined>(undefined);
 
-  const handleSetIndex = (newIndex: number) => {
-    setIndex(newIndex);
-    onIndexChange?.(newIndex);
-  };
+  const handleSetIndex = useCallback(
+    (newIndex: number | ((prev: number) => number)) => {
+      if (typeof newIndex === "function") {
+        setIndex((prev) => {
+          const next = newIndex(prev);
+          onIndexChange?.(next);
+          return next;
+        });
+      } else {
+        setIndex(newIndex);
+        onIndexChange?.(newIndex);
+      }
+    },
+    [onIndexChange],
+  );
 
   useEffect(() => {
     setIndex(initialIndex);
   }, [initialIndex]);
 
+  const contextValue = useMemo(
+    () => ({
+      index,
+      setIndex: handleSetIndex,
+      itemsCount,
+      setItemsCount,
+      disableDrag,
+      loop,
+    }),
+    [index, handleSetIndex, itemsCount, disableDrag, loop],
+  );
+
   return (
-    <CarouselContext.Provider
-      value={{
-        index,
-        setIndex: handleSetIndex,
-        itemsCount,
-        setItemsCount,
-        disableDrag,
-        loop,
-        infiniteLoop,
-        onNextRef,
-        onPrevRef,
-      }}
-    >
+    <CarouselContext.Provider value={contextValue}>
       {children}
     </CarouselContext.Provider>
   );
@@ -96,7 +99,6 @@ export type CarouselProps = {
   onIndexChange?: (newIndex: number) => void;
   disableDrag?: boolean;
   loop?: boolean;
-  infiniteLoop?: boolean;
 };
 
 function Carousel({
@@ -107,7 +109,6 @@ function Carousel({
   onIndexChange,
   disableDrag = false,
   loop = false,
-  infiniteLoop = false,
 }: CarouselProps) {
   const [internalIndex, setInternalIndex] = useState<number>(initialIndex);
   const isControlled = externalIndex !== undefined;
@@ -126,7 +127,6 @@ function Carousel({
       onIndexChange={handleIndexChange}
       disableDrag={disableDrag}
       loop={loop}
-      infiniteLoop={infiniteLoop}
     >
       <div className={cn("group/hover relative", className)}>
         <div className="overflow-hidden">{children}</div>
@@ -146,27 +146,20 @@ function CarouselNavigation({
   classNameButton,
   alwaysShow,
 }: CarouselNavigationProps) {
-  const { index, setIndex, itemsCount, loop, infiniteLoop, onNextRef, onPrevRef } =
-    useCarousel();
-
-  const canLoop = loop || infiniteLoop;
+  const { index, setIndex, itemsCount, loop } = useCarousel();
 
   const handlePrevClick = () => {
-    if (infiniteLoop && onPrevRef.current) {
-      onPrevRef.current();
-    } else if (index > 0) {
+    if (index > 0) {
       setIndex(index - 1);
-    } else if (canLoop) {
+    } else if (loop) {
       setIndex(itemsCount - 1);
     }
   };
 
   const handleNextClick = () => {
-    if (infiniteLoop && onNextRef.current) {
-      onNextRef.current();
-    } else if (index < itemsCount - 1) {
+    if (index < itemsCount - 1) {
       setIndex(index + 1);
-    } else if (canLoop) {
+    } else if (loop) {
       setIndex(0);
     }
   };
@@ -191,7 +184,7 @@ function CarouselNavigation({
             : "group-hover/hover:disabled:opacity-40",
           classNameButton,
         )}
-        disabled={!canLoop && index === 0}
+        disabled={!loop && index === 0}
         onClick={handlePrevClick}
       >
         <ChevronLeft
@@ -212,7 +205,7 @@ function CarouselNavigation({
           classNameButton,
         )}
         aria-label="Next slide"
-        disabled={!canLoop && index + 1 === itemsCount}
+        disabled={!loop && index + 1 === itemsCount}
         onClick={handleNextClick}
       >
         <ChevronRight
@@ -277,27 +270,12 @@ function CarouselContent({
   className,
   transition,
 }: CarouselContentProps) {
-  const {
-    index,
-    setIndex,
-    setItemsCount,
-    disableDrag,
-    loop,
-    infiniteLoop,
-    onNextRef,
-    onPrevRef,
-  } = useCarousel();
-  const [isTransitioning, setIsTransitioning] = useState(false);
+  const { index, setIndex, setItemsCount, disableDrag, loop } = useCarousel();
   const containerRef = useRef<HTMLDivElement>(null);
   const dragStartX = useRef<number | null>(null);
 
   const childrenArray = Children.toArray(children);
   const itemsLength = childrenArray.length;
-
-  // For infinite loop, we track the position including clones
-  // The offset is itemsLength because we prepend one full set of clones
-  const infiniteOffset = itemsLength;
-  const [infiniteIndex, setInfiniteIndex] = useState(infiniteOffset + index);
 
   useEffect(() => {
     if (!itemsLength) {
@@ -307,87 +285,26 @@ function CarouselContent({
     setItemsCount(itemsLength);
   }, [itemsLength, setItemsCount]);
 
-  // Handle the seamless reset after transition for infinite loop
-  useEffect(() => {
-    if (!infiniteLoop || !isTransitioning) return;
-
-    const duration = transition?.duration ?? 300;
-    const timer = setTimeout(() => {
-      setIsTransitioning(false);
-    }, duration);
-
-    return () => clearTimeout(timer);
-  }, [infiniteLoop, isTransitioning, transition?.duration]);
-
   const handleDragStart = (clientX: number) => {
     if (disableDrag) return;
     dragStartX.current = clientX;
   };
 
-  const handleNext = useCallback(() => {
-    if (infiniteLoop) {
-      setIsTransitioning(true);
-      setInfiniteIndex((prev) => {
-        const next = prev + 1;
-        // If we've gone past the end clones, reset to the beginning of originals
-        if (next >= itemsLength * 2) {
-          setTimeout(() => {
-            setIsTransitioning(false);
-            setInfiniteIndex(itemsLength);
-          }, transition?.duration ?? 300);
-        }
-        return next;
-      });
-    }
-    setIndex((index + 1) % itemsLength);
-  }, [infiniteLoop, index, itemsLength, setIndex, transition?.duration]);
-
-  const handlePrev = useCallback(() => {
-    if (infiniteLoop) {
-      setIsTransitioning(true);
-      setInfiniteIndex((prev) => {
-        const next = prev - 1;
-        // If we've gone before the start clones, reset to the end of originals
-        if (next <= 0) {
-          setTimeout(() => {
-            setIsTransitioning(false);
-            setInfiniteIndex(itemsLength);
-          }, transition?.duration ?? 300);
-        }
-        return next;
-      });
-    }
-    setIndex((index - 1 + itemsLength) % itemsLength);
-  }, [infiniteLoop, index, itemsLength, setIndex, transition?.duration]);
-
-  // Register handlers for navigation buttons when using infiniteLoop
-  useEffect(() => {
-    if (infiniteLoop) {
-      onNextRef.current = handleNext;
-      onPrevRef.current = handlePrev;
-    }
-  });
-
   const handleDragEnd = (clientX: number) => {
     if (disableDrag || dragStartX.current === null) return;
 
     const diff = dragStartX.current - clientX;
-    const canLoop = loop || infiniteLoop;
 
     if (diff > 50) {
-      if (infiniteLoop) {
-        handleNext();
-      } else if (index < itemsLength - 1) {
+      if (index < itemsLength - 1) {
         setIndex(index + 1);
-      } else if (canLoop) {
+      } else if (loop) {
         setIndex(0);
       }
     } else if (diff < -50) {
-      if (infiniteLoop) {
-        handlePrev();
-      } else if (index > 0) {
+      if (index > 0) {
         setIndex(index - 1);
-      } else if (canLoop) {
+      } else if (loop) {
         setIndex(itemsLength - 1);
       }
     }
@@ -420,37 +337,6 @@ function CarouselContent({
   const duration = transition?.duration ?? 300;
   const ease = transition?.ease ?? "ease-out";
 
-  // For infinite loop, create clones at both ends
-  const renderChildren = () => {
-    if (!infiniteLoop) {
-      return children;
-    }
-
-    // Clone all items: [clones of all] [original items] [clones of all]
-    return (
-      <>
-        {childrenArray.map((child, i) =>
-          isValidElement(child)
-            ? cloneElement(child, { key: `clone-start-${i}` })
-            : child,
-        )}
-        {childrenArray.map((child, i) =>
-          isValidElement(child)
-            ? cloneElement(child, { key: `original-${i}` })
-            : child,
-        )}
-        {childrenArray.map((child, i) =>
-          isValidElement(child)
-            ? cloneElement(child, { key: `clone-end-${i}` })
-            : child,
-        )}
-      </>
-    );
-  };
-
-  const currentPosition = infiniteLoop ? infiniteIndex : index;
-  const shouldAnimate = !infiniteLoop || isTransitioning;
-
   return (
     <div
       ref={containerRef}
@@ -460,8 +346,8 @@ function CarouselContent({
         className,
       )}
       style={{
-        transform: `translateX(-${currentPosition * 100}%)`,
-        transition: shouldAnimate ? `transform ${duration}ms ${ease}` : "none",
+        transform: `translateX(-${index * 100}%)`,
+        transition: `transform ${duration}ms ${ease}`,
       }}
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
@@ -469,7 +355,7 @@ function CarouselContent({
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
-      {renderChildren()}
+      {children}
     </div>
   );
 }
@@ -495,8 +381,8 @@ function CarouselItem({ children, className }: CarouselItemProps) {
 export {
   Carousel,
   CarouselContent,
-  CarouselNavigation,
   CarouselIndicator,
   CarouselItem,
+  CarouselNavigation,
   useCarousel,
 };

@@ -17,19 +17,6 @@
       ]
     },
     {
-      "name": "carousel-motion",
-      "type": "registry:ui",
-      "title": "Carousel Motion",
-      "description": "A smooth, animated carousel component powered by Motion.",
-      "dependencies": ["lucide-react", "motion"],
-      "files": [
-        {
-          "path": "registry/components/ui/carousel-motion.tsx",
-          "type": "registry:ui"
-        }
-      ]
-    },
-    {
       "name": "carousel",
       "type": "registry:ui",
       "title": "Carousel",

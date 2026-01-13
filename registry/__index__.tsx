@@ -25,12 +25,6 @@ export const components: Record<
     component: React.lazy(() => import("@/components/demo/carousel-loop-demo")),
     src: "components/demo/carousel-loop-demo.tsx",
   },
-  "carousel-infinite-loop-demo": {
-    component: React.lazy(
-      () => import("@/components/demo/carousel-infinite-loop-demo"),
-    ),
-    src: "components/demo/carousel-infinite-loop-demo.tsx",
-  },
   "carousel-spacing-demo": {
     component: React.lazy(
       () => import("@/components/demo/carousel-spacing-demo"),

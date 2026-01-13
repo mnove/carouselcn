@@ -1,0 +1,10 @@
+{
+  "title": "docs",
+  "pages": [
+    "--- Getting Started ---",
+    "index",
+    "installation",
+    "--- Components ---",
+    "...components"
+  ]
+}

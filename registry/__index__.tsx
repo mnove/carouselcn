@@ -25,10 +25,28 @@ export const components: Record<
     component: React.lazy(() => import("@/components/demo/carousel-loop-demo")),
     src: "components/demo/carousel-loop-demo.tsx",
   },
+  "carousel-vertical-demo": {
+    component: React.lazy(
+      () => import("@/components/demo/carousel-vertical-demo")
+    ),
+    src: "components/demo/carousel-vertical-demo.tsx",
+  },
   "carousel-spacing-demo": {
     component: React.lazy(
       () => import("@/components/demo/carousel-spacing-demo"),
     ),
     src: "components/demo/carousel-spacing-demo.tsx",
+  },
+  "carousel-navigation-position-demo": {
+    component: React.lazy(
+      () => import("@/components/demo/carousel-navigation-position-demo"),
+    ),
+    src: "components/demo/carousel-navigation-position-demo.tsx",
+  },
+  "carousel-custom-navigation-demo": {
+    component: React.lazy(
+      () => import("@/components/demo/carousel-custom-navigation-demo"),
+    ),
+    src: "components/demo/carousel-custom-navigation-demo.tsx",
   },
 };

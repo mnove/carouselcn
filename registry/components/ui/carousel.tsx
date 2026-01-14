@@ -1,6 +1,11 @@
 "use client";
 import { cn } from "@/lib/utils";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  ChevronUp,
+} from "lucide-react";
 import {
   Children,
   ReactNode,
@@ -20,10 +25,11 @@ export type CarouselContextType = {
   setItemsCount: (newItemsCount: number) => void;
   disableDrag: boolean;
   loop: boolean;
+  orientation: "horizontal" | "vertical";
 };
 
 const CarouselContext = createContext<CarouselContextType | undefined>(
-  undefined,
+  undefined
 );
 
 function useCarousel() {
@@ -40,6 +46,7 @@ export type CarouselProviderProps = {
   onIndexChange?: (newIndex: number) => void;
   disableDrag?: boolean;
   loop?: boolean;
+  orientation?: "horizontal" | "vertical";
 };
 
 function CarouselProvider({
@@ -48,6 +55,7 @@ function CarouselProvider({
   onIndexChange,
   disableDrag = false,
   loop = false,
+  orientation = "horizontal",
 }: CarouselProviderProps) {
   const [index, setIndex] = useState<number>(initialIndex);
   const [itemsCount, setItemsCount] = useState<number>(0);
@@ -65,7 +73,7 @@ function CarouselProvider({
         onIndexChange?.(newIndex);
       }
     },
-    [onIndexChange],
+    [onIndexChange]
   );
 
   useEffect(() => {
@@ -80,8 +88,9 @@ function CarouselProvider({
       setItemsCount,
       disableDrag,
       loop,
+      orientation,
     }),
-    [index, handleSetIndex, itemsCount, disableDrag, loop],
+    [index, handleSetIndex, itemsCount, disableDrag, loop, orientation]
   );
 
   return (
@@ -99,6 +108,7 @@ export type CarouselProps = {
   onIndexChange?: (newIndex: number) => void;
   disableDrag?: boolean;
   loop?: boolean;
+  orientation?: "horizontal" | "vertical";
 };
 
 function Carousel({
@@ -109,6 +119,7 @@ function Carousel({
   onIndexChange,
   disableDrag = false,
   loop = false,
+  orientation = "horizontal",
 }: CarouselProps) {
   const [internalIndex, setInternalIndex] = useState<number>(initialIndex);
   const isControlled = externalIndex !== undefined;
@@ -127,9 +138,10 @@ function Carousel({
       onIndexChange={handleIndexChange}
       disableDrag={disableDrag}
       loop={loop}
+      orientation={orientation}
     >
-      <div className={cn("group/hover relative", className)}>
-        <div className="overflow-hidden">{children}</div>
+      <div className={cn("group/hover relative h-full", className)}>
+        <div className="h-full overflow-hidden">{children}</div>
       </div>
     </CarouselProvider>
   );
@@ -146,7 +158,8 @@ function CarouselNavigation({
   classNameButton,
   alwaysShow,
 }: CarouselNavigationProps) {
-  const { index, setIndex, itemsCount, loop } = useCarousel();
+  const { index, setIndex, itemsCount, loop, orientation } = useCarousel();
+  const isVertical = orientation === "vertical";
 
   const handlePrevClick = () => {
     if (index > 0) {
@@ -164,11 +177,17 @@ function CarouselNavigation({
     }
   };
 
+  const PrevIcon = isVertical ? ChevronUp : ChevronLeft;
+  const NextIcon = isVertical ? ChevronDown : ChevronRight;
+
   return (
     <div
       className={cn(
-        "pointer-events-none absolute left-[-12.5%] top-1/2 flex w-[125%] -translate-y-1/2 justify-between px-2",
-        className,
+        "pointer-events-none absolute flex justify-between",
+        isVertical
+          ? "left-1/2 top-[-12.5%] h-[125%] -translate-x-1/2 flex-col py-2"
+          : "left-[-12.5%] top-1/2 w-[125%] -translate-y-1/2 px-2",
+        className
       )}
     >
       <button
@@ -182,15 +201,12 @@ function CarouselNavigation({
           alwaysShow
             ? "disabled:opacity-40"
             : "group-hover/hover:disabled:opacity-40",
-          classNameButton,
+          classNameButton
         )}
         disabled={!loop && index === 0}
         onClick={handlePrevClick}
       >
-        <ChevronLeft
-          className="stroke-zinc-600 dark:stroke-zinc-50"
-          size={16}
-        />
+        <PrevIcon className="stroke-zinc-600 dark:stroke-zinc-50" size={16} />
       </button>
       <button
         type="button"
@@ -202,16 +218,13 @@ function CarouselNavigation({
           alwaysShow
             ? "disabled:opacity-40"
             : "group-hover/hover:disabled:opacity-40",
-          classNameButton,
+          classNameButton
         )}
         aria-label="Next slide"
         disabled={!loop && index + 1 === itemsCount}
         onClick={handleNextClick}
       >
-        <ChevronRight
-          className="stroke-zinc-600 dark:stroke-zinc-50"
-          size={16}
-        />
+        <NextIcon className="stroke-zinc-600 dark:stroke-zinc-50" size={16} />
       </button>
     </div>
   );
@@ -226,16 +239,20 @@ function CarouselIndicator({
   className,
   classNameButton,
 }: CarouselIndicatorProps) {
-  const { index, itemsCount, setIndex } = useCarousel();
+  const { index, itemsCount, setIndex, orientation } = useCarousel();
+  const isVertical = orientation === "vertical";
 
   return (
     <div
       className={cn(
-        "absolute bottom-0 z-10 flex w-full items-center justify-center",
-        className,
+        "absolute z-10 flex items-center justify-center",
+        isVertical
+          ? "right-0 top-1/2 h-full -translate-y-1/2 flex-col"
+          : "bottom-0 w-full",
+        className
       )}
     >
-      <div className="flex space-x-2">
+      <div className={cn("flex", isVertical ? "flex-col space-y-2" : "space-x-2")}>
         {Array.from({ length: itemsCount }, (_, i) => (
           <button
             key={i}
@@ -247,7 +264,7 @@ function CarouselIndicator({
               index === i
                 ? "bg-zinc-950 dark:bg-zinc-50"
                 : "bg-zinc-900/50 dark:bg-zinc-100/50",
-              classNameButton,
+              classNameButton
             )}
           />
         ))}
@@ -270,9 +287,11 @@ function CarouselContent({
   className,
   transition,
 }: CarouselContentProps) {
-  const { index, setIndex, setItemsCount, disableDrag, loop } = useCarousel();
+  const { index, setIndex, setItemsCount, disableDrag, loop, orientation } =
+    useCarousel();
   const containerRef = useRef<HTMLDivElement>(null);
-  const dragStartX = useRef<number | null>(null);
+  const dragStart = useRef<number | null>(null);
+  const isVertical = orientation === "vertical";
 
   const childrenArray = Children.toArray(children);
   const itemsLength = childrenArray.length;
@@ -285,15 +304,15 @@ function CarouselContent({
     setItemsCount(itemsLength);
   }, [itemsLength, setItemsCount]);
 
-  const handleDragStart = (clientX: number) => {
+  const handleDragStart = (position: number) => {
     if (disableDrag) return;
-    dragStartX.current = clientX;
+    dragStart.current = position;
   };
 
-  const handleDragEnd = (clientX: number) => {
-    if (disableDrag || dragStartX.current === null) return;
+  const handleDragEnd = (position: number) => {
+    if (disableDrag || dragStart.current === null) return;
 
-    const diff = dragStartX.current - clientX;
+    const diff = dragStart.current - position;
 
     if (diff > 50) {
       if (index < itemsLength - 1) {
@@ -309,44 +328,53 @@ function CarouselContent({
       }
     }
 
-    dragStartX.current = null;
+    dragStart.current = null;
+  };
+
+  const getPosition = (e: React.MouseEvent | React.Touch) => {
+    return isVertical ? e.clientY : e.clientX;
   };
 
   const handleMouseDown = (e: React.MouseEvent) => {
-    handleDragStart(e.clientX);
+    handleDragStart(getPosition(e));
   };
 
   const handleMouseUp = (e: React.MouseEvent) => {
-    handleDragEnd(e.clientX);
+    handleDragEnd(getPosition(e));
   };
 
   const handleMouseLeave = (e: React.MouseEvent) => {
-    if (dragStartX.current !== null) {
-      handleDragEnd(e.clientX);
+    if (dragStart.current !== null) {
+      handleDragEnd(getPosition(e));
     }
   };
 
   const handleTouchStart = (e: React.TouchEvent) => {
-    handleDragStart(e.touches[0].clientX);
+    handleDragStart(getPosition(e.touches[0]));
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
-    handleDragEnd(e.changedTouches[0].clientX);
+    handleDragEnd(getPosition(e.changedTouches[0]));
   };
 
   const duration = transition?.duration ?? 300;
   const ease = transition?.ease ?? "ease-out";
 
+  const transform = isVertical
+    ? `translateY(-${index * 100}%)`
+    : `translateX(-${index * 100}%)`;
+
   return (
     <div
       ref={containerRef}
       className={cn(
-        "flex items-center",
+        "flex h-full",
+        isVertical ? "flex-col" : "items-center",
         !disableDrag && "cursor-grab active:cursor-grabbing",
-        className,
+        className
       )}
       style={{
-        transform: `translateX(-${index * 100}%)`,
+        transform,
         transition: `transform ${duration}ms ${ease}`,
       }}
       onMouseDown={handleMouseDown}
@@ -366,11 +394,15 @@ export type CarouselItemProps = {
 };
 
 function CarouselItem({ children, className }: CarouselItemProps) {
+  const { orientation } = useCarousel();
+  const isVertical = orientation === "vertical";
+
   return (
     <div
       className={cn(
-        "w-full min-w-0 shrink-0 grow-0 overflow-hidden",
-        className,
+        "shrink-0 grow-0 overflow-hidden",
+        isVertical ? "h-full min-h-0 w-full" : "min-w-0 w-full",
+        className
       )}
     >
       {children}

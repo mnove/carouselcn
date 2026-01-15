@@ -221,7 +221,7 @@ function CarouselNavigation({
           classNameButton
         )}
         aria-label="Next slide"
-        disabled={!loop && index + 1 === itemsCount}
+        disabled={!loop && index >= itemsCount - 1}
         onClick={handleNextClick}
       >
         <NextIcon className="stroke-zinc-600 dark:stroke-zinc-50" size={16} />
@@ -287,14 +287,43 @@ function CarouselContent({
   className,
   transition,
 }: CarouselContentProps) {
-  const { index, setIndex, setItemsCount, disableDrag, loop, orientation } =
-    useCarousel();
+  const {
+    index,
+    setIndex,
+    setItemsCount,
+    disableDrag,
+    loop,
+    orientation,
+  } = useCarousel();
+  const [visibleItemsCount, setVisibleItemsCount] = useState(1);
   const containerRef = useRef<HTMLDivElement>(null);
   const dragStart = useRef<number | null>(null);
   const isVertical = orientation === "vertical";
 
   const childrenArray = Children.toArray(children);
   const itemsLength = childrenArray.length;
+
+  // Detect visible items using IntersectionObserver
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    const options = {
+      root: containerRef.current,
+      threshold: 0.5,
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      const visibleCount = entries.filter(
+        (entry) => entry.isIntersecting
+      ).length;
+      setVisibleItemsCount(visibleCount);
+    }, options);
+
+    const childNodes = containerRef.current.children;
+    Array.from(childNodes).forEach((child) => observer.observe(child));
+
+    return () => observer.disconnect();
+  }, [children]);
 
   useEffect(() => {
     if (!itemsLength) {
@@ -361,8 +390,8 @@ function CarouselContent({
   const ease = transition?.ease ?? "ease-out";
 
   const transform = isVertical
-    ? `translateY(-${index * 100}%)`
-    : `translateX(-${index * 100}%)`;
+    ? `translateY(-${index * (100 / visibleItemsCount)}%)`
+    : `translateX(-${index * (100 / visibleItemsCount)}%)`;
 
   return (
     <div

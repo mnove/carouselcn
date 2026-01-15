@@ -8,7 +8,7 @@ import { CodeBlock } from "./code-block";
 export default async function ComponentPreview({
   name,
   center = true,
-  constrainHeight = true,
+  constrainHeight = false,
 }: {
   name: string;
   center?: boolean;

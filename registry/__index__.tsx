@@ -49,4 +49,28 @@ export const components: Record<
     ),
     src: "components/demo/carousel-custom-navigation-demo.tsx",
   },
+  "example-logo-carousel": {
+    component: React.lazy(
+      () => import("@/components/demo/example-logo-carousel"),
+    ),
+    src: "components/demo/example-logo-carousel.tsx",
+  },
+  "example-testimonials": {
+    component: React.lazy(
+      () => import("@/components/demo/example-testimonials"),
+    ),
+    src: "components/demo/example-testimonials.tsx",
+  },
+  "example-image-gallery": {
+    component: React.lazy(
+      () => import("@/components/demo/example-image-gallery"),
+    ),
+    src: "components/demo/example-image-gallery.tsx",
+  },
+  "example-product-cards": {
+    component: React.lazy(
+      () => import("@/components/demo/example-product-cards"),
+    ),
+    src: "components/demo/example-product-cards.tsx",
+  },
 };

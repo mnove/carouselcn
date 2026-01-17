@@ -3,15 +3,51 @@ title: Installation
 description: How to install carouselcn in your project.
 ---
 
-## Code Block
+## Prerequisites
 
-```js
-console.log('Hello World');
+You need a React project with Tailwind CSS configured. The component also uses:
+- `lucide-react` for icons (ChevronLeft, ChevronRight, etc.)
+- A `cn` utility function for classnames (standard in shadcn/ui projects)
+
+## Option 1: CLI Install
+
+Use the shadcn CLI to add the component directly to your project:
+
+<CodeBlockCommand component="carousel" />
+
+This will add `carousel.tsx` to your `components/ui` folder.
+
+## Option 2: Manual Copy
+
+Copy the component code directly from the [Carousel component page](/docs/components/carousel) and paste it into your project at `components/ui/carousel.tsx`.
+
+Make sure you have the `cn` utility. If not, create `lib/utils.ts`:
+
+```ts
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
 ```
 
-## Cards
+And install the dependencies:
 
-<Cards>
-  <Card title="Learn more about Next.js" href="https://nextjs.org/docs" />
-  <Card title="Learn more about Fumadocs" href="https://fumadocs.dev" />
-</Cards>
+```bash
+npm install clsx tailwind-merge lucide-react
+```
+
+## Usage
+
+```tsx
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNavigation,
+  CarouselIndicator,
+} from "@/components/ui/carousel";
+```
+
+See the [Carousel docs](/docs/components/carousel) for full API reference and examples.

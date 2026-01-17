@@ -3,6 +3,48 @@ title: Overview
 description: What is carouselcn and how to get started.
 ---
 
-Carousecn is a collection of shadcn/ui components and templates to build beautiful, accessible, and customizable carousel UIs with React and Tailwind CSS.
+**Carouselcn** is a lightweight, copy-paste carousel component for React and Tailwind CSS. Built following the [shadcn/ui](https://ui.shadcn.com) philosophy.
 
-The components use **zero dependencies** so you can easily integrate them into your existing projects.
+## Why carouselcn?
+
+- **Zero animation dependencies** - Uses CSS transitions instead of Framer Motion or other animation libraries
+- **Copy-paste friendly** - Just copy the code into your project, no npm package to install
+- **Fully customizable** - You own the code, modify it however you need
+- **Composable architecture** - Mix and match sub-components (navigation, indicators, autoplay)
+- **Accessible** - Keyboard navigation and ARIA labels included
+
+## Features
+
+- Horizontal and vertical orientation
+- Loop mode for infinite scrolling
+- Drag/swipe support (mouse and touch)
+- Multi-item display with flexible sizing
+- Autoplay with play/pause controls
+- Custom navigation and indicators via hooks
+- Controlled and uncontrolled modes
+
+## Quick Start
+
+```tsx
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNavigation,
+  CarouselIndicator,
+} from "@/components/ui/carousel";
+
+export function MyCarousel() {
+  return (
+    <Carousel>
+      <CarouselContent>
+        <CarouselItem>Slide 1</CarouselItem>
+        <CarouselItem>Slide 2</CarouselItem>
+        <CarouselItem>Slide 3</CarouselItem>
+      </CarouselContent>
+      <CarouselNavigation />
+      <CarouselIndicator />
+    </Carousel>
+  );
+}
+```

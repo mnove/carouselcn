@@ -7,10 +7,6 @@ export const components: Record<
     src: string;
   }
 > = {
-  "test-demo": {
-    component: React.lazy(() => import("@/components/demo/test-demo")),
-    src: "components/demo/test-demo.tsx",
-  },
   "carousel-demo": {
     component: React.lazy(() => import("@/components/demo/carousel-demo")),
     src: "components/demo/carousel-demo.tsx",
@@ -27,7 +23,7 @@ export const components: Record<
   },
   "carousel-vertical-demo": {
     component: React.lazy(
-      () => import("@/components/demo/carousel-vertical-demo")
+      () => import("@/components/demo/carousel-vertical-demo"),
     ),
     src: "components/demo/carousel-vertical-demo.tsx",
   },

@@ -4,19 +4,6 @@
   "homepage": "https://carouselcn.marcellonovelli.com",
   "items": [
     {
-      "name": "test",
-      "type": "registry:ui",
-      "title": "Test",
-      "description": "A test component.",
-      "dependencies": ["lucide-react"],
-      "files": [
-        {
-          "path": "registry/components/ui/test.tsx",
-          "type": "registry:ui"
-        }
-      ]
-    },
-    {
       "name": "carousel",
       "type": "registry:ui",
       "title": "Carousel",

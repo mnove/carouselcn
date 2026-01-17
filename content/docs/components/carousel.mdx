@@ -81,6 +81,12 @@ Use the `useCarousel` hook to build completely custom navigation elements.
 
 <ComponentPreview name="carousel-custom-navigation-demo" />
 
+### Autoplay
+
+Use the `useCarouselAutoplay` hook to automatically advance slides. The hook provides `play`, `pause`, and `toggle` controls.
+
+<ComponentPreview name="carousel-autoplay-demo" />
+
 ---
 
 ## API Reference
@@ -203,6 +209,55 @@ Hook to access carousel state and controls.
 ```tsx
 const { index, setIndex, itemsCount } = useCarousel();
 ```
+
+### useCarouselAutoplay
+
+Hook to enable automatic slide advancement.
+
+```tsx
+const { isPlaying, play, pause, toggle } = useCarouselAutoplay({
+  interval: 3000,
+  autoStart: true,
+});
+```
+
+<TypeTable
+  type={{
+    interval: {
+      description: 'Time between slides (ms)',
+      type: 'number',
+      default: '3000',
+    },
+    autoStart: {
+      description: 'Start playing immediately',
+      type: 'boolean',
+      default: 'true',
+    },
+  }}
+/>
+
+**Returns:**
+
+<TypeTable
+  type={{
+    isPlaying: {
+      description: 'Current playing state',
+      type: 'boolean',
+    },
+    play: {
+      description: 'Start auto-play',
+      type: '() => void',
+    },
+    pause: {
+      description: 'Pause auto-play',
+      type: '() => void',
+    },
+    toggle: {
+      description: 'Toggle play/pause',
+      type: '() => void',
+    },
+  }}
+/>
 
 ---
 

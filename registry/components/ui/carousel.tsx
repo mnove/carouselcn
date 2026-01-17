@@ -439,6 +439,40 @@ function CarouselItem({ children, className }: CarouselItemProps) {
   );
 }
 
+export type UseCarouselAutoplayOptions = {
+  interval?: number;
+  autoStart?: boolean;
+};
+
+function useCarouselAutoplay(options: UseCarouselAutoplayOptions = {}) {
+  const { interval = 3000, autoStart = true } = options;
+  const { index, setIndex, itemsCount, loop } = useCarousel();
+  const [isPlaying, setIsPlaying] = useState(autoStart);
+
+  useEffect(() => {
+    if (!isPlaying || itemsCount === 0) return;
+
+    const timer = setInterval(() => {
+      if (index < itemsCount - 1) {
+        setIndex(index + 1);
+      } else if (loop) {
+        setIndex(0);
+      } else {
+        setIsPlaying(false);
+      }
+    }, interval);
+
+    return () => clearInterval(timer);
+  }, [index, itemsCount, loop, interval, isPlaying, setIndex]);
+
+  return {
+    isPlaying,
+    play: () => setIsPlaying(true),
+    pause: () => setIsPlaying(false),
+    toggle: () => setIsPlaying((prev) => !prev),
+  };
+}
+
 export {
   Carousel,
   CarouselContent,
@@ -446,4 +480,5 @@ export {
   CarouselItem,
   CarouselNavigation,
   useCarousel,
+  useCarouselAutoplay,
 };

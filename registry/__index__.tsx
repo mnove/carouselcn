@@ -49,6 +49,12 @@ export const components: Record<
     ),
     src: "components/demo/carousel-custom-navigation-demo.tsx",
   },
+  "carousel-autoplay-demo": {
+    component: React.lazy(
+      () => import("@/components/demo/carousel-autoplay-demo"),
+    ),
+    src: "components/demo/carousel-autoplay-demo.tsx",
+  },
   "example-logo-carousel": {
     component: React.lazy(
       () => import("@/components/demo/example-logo-carousel"),
@@ -72,5 +78,11 @@ export const components: Record<
       () => import("@/components/demo/example-product-cards"),
     ),
     src: "components/demo/example-product-cards.tsx",
+  },
+  "example-autoplay-gallery": {
+    component: React.lazy(
+      () => import("@/components/demo/example-autoplay-gallery"),
+    ),
+    src: "components/demo/example-autoplay-gallery.tsx",
   },
 };

@@ -3,6 +3,7 @@ import { GalleryThumbnails } from "lucide-react";
 
 export function baseOptions(): BaseLayoutProps {
   return {
+    links: [{ text: "Docs", url: "/docs" }],
     nav: {
       title: (
         <div className="flex items-center gap-2">

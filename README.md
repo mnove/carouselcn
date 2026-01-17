@@ -61,6 +61,10 @@ pnpm dev
 
 Open http://localhost:3000 to see the documentation site.
 
+## Contributing
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines on adding features, demos, and examples.
+
 ## License
 
 MIT

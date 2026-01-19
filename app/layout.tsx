@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     "react",
     "react carousel",
   ],
-  metadataBase: new URL("https://carouselcn.vercel.app"),
+  metadataBase: new URL("https://carouselcn.marcellonovelli.com"),
 };
 
 export default function Layout({ children }: LayoutProps<"/">) {

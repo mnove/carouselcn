@@ -1,7 +1,7 @@
 export const config = {
   appUrl:
     process.env.NODE_ENV === "production"
-      ? `https://${process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL}`
+      ? `https://carouselcn.marcellonovelli.com`
       : `http://localhost:3000`,
   githubUrl: "https://github.com/mnove/carouselcn",
 };

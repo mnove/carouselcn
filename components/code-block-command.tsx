@@ -71,7 +71,7 @@ export function CodeBlockCommand({
             className="bg-muted/50 shadow-sm/5 *:first:top-3"
           />
 
-          {!isShadcnComponent && (
+          {/* {!isShadcnComponent && (
             <>
               <div className="my-6 flex items-center justify-center gap-2 overflow-hidden">
                 <Separator />
@@ -97,7 +97,7 @@ export function CodeBlockCommand({
                 className="bg-muted/50 shadow-sm/5 *:first:top-3"
               />
             </>
-          )}
+          )} */}
         </TabsContent>
       ))}
     </Tabs>

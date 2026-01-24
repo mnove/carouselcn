@@ -1,0 +1,40 @@
+post-merge:
+  commands:
+    pnpm-install:
+      run: |
+        set -euo pipefail
+
+        if git rev-parse --verify ORIG_HEAD >/dev/null 2>&1; then
+          BASE="ORIG_HEAD"
+        else
+          BASE="HEAD~1"
+        fi
+
+        CHANGED="$(git diff --name-only "$BASE" HEAD || true)"
+
+        if echo "$CHANGED" | grep -qE '^(pnpm-lock\.yaml|package\.json)$'; then
+          pnpm install
+        else
+          echo "post-merge: no dependency files changed; skipping pnpm install"
+        fi
+
+pre-commit:
+  parallel: true
+  commands:
+    prettier:
+      glob: "*.{ts,tsx,js,jsx,cjs,mjs,json,md,yml,yaml,css,scss}"
+      run: pnpm exec prettier --write {staged_files}
+      stage_fixed: true
+
+    eslint:
+      glob: "*.{ts,tsx,js,jsx,cjs,mjs}"
+      run: pnpm exec eslint {staged_files}
+
+    typecheck:
+      glob: "*.{ts,tsx}"
+      run: pnpm run types:check
+
+commit-msg:
+  commands:
+    commitlint:
+      run: pnpm exec commitlint --edit {1}

@@ -1,6 +1,5 @@
-import { config } from "@/config";
-import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { siteConfig } from "@/config/site";
 import { CodeBlock } from "./code-block";
 import { BunLogo, NPMLogo, PnpmLogo, YarnLogo } from "./icons";
 
@@ -37,7 +36,7 @@ const getInstallationCommand = (packageManager: string, component: string) => {
 };
 
 const getRegistryUrl = (component: string) => {
-  return `${config.appUrl}/r/${component}.json`;
+  return `${siteConfig.appUrl}/r/${component}.json`;
 };
 
 export function CodeBlockCommand({

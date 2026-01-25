@@ -248,6 +248,26 @@ export const BunLogo = (props: SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
+export const MarkdownLogo = (props: SVGProps<SVGSVGElement>) => (
+  <svg
+    viewBox="0 0 208 128"
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    width="1em"
+    height="1em"
+    {...props}
+  >
+    <g fill="currentColor">
+      <path
+        fillRule="evenodd"
+        d="M15 10a5 5 0 0 0-5 5v98a5 5 0 0 0 5 5h178a5 5 0 0 0 5-5V15a5 5 0 0 0-5-5zM0 15A15 15 0 0 1 15 0h178a15 15 0 0 1 15 15v98a15 15 0 0 1-15 15H15a15 15 0 0 1-15-15z"
+        clipRule="evenodd"
+      />
+      <path d="M30 98V30h20l20 25 20-25h20v68H90V59L70 84 50 59v39zm125 0-30-33h20V30h20v35h20z" />
+    </g>
+  </svg>
+);
+
 export const OpenAILogo = (props: SVGProps<SVGSVGElement>) => (
   <svg
     role="img"
@@ -290,25 +310,5 @@ export const V0Logo = (props: SVGProps<SVGSVGElement>) => (
       fill="currentColor"
       d="M14.066 6.028v2.22h5.729q.075-.001.148.005l-5.853 5.752a2 2 0 0 1-.024-.309V8.247h-2.353v5.45c0 2.322 1.935 4.222 4.258 4.222h5.675v-2.22h-5.675q-.03 0-.059-.003l5.729-5.629q.006.082.006.166v5.465H24v-5.465a4.204 4.204 0 0 0-4.205-4.205zM0 8.245l8.28 9.266c.839.94 2.396.346 2.396-.914V8.245H8.19v5.44l-4.86-5.44Z"
     />
-  </svg>
-);
-
-export const MarkdownLogo = (props: SVGProps<SVGSVGElement>) => (
-  <svg
-    viewBox="0 0 208 128"
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    width="1em"
-    height="1em"
-    {...props}
-  >
-    <g fill="currentColor">
-      <path
-        fillRule="evenodd"
-        d="M15 10a5 5 0 0 0-5 5v98a5 5 0 0 0 5 5h178a5 5 0 0 0 5-5V15a5 5 0 0 0-5-5zM0 15A15 15 0 0 1 15 0h178a15 15 0 0 1 15 15v98a15 15 0 0 1-15 15H15a15 15 0 0 1-15-15z"
-        clipRule="evenodd"
-      />
-      <path d="M30 98V30h20l20 25 20-25h20v68H90V59L70 84 50 59v39zm125 0-30-33h20V30h20v35h20z" />
-    </g>
   </svg>
 );

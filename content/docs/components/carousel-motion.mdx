@@ -1,0 +1,266 @@
+---
+title: Carousel Motion
+description: A carousel component with smooth spring-based animations powered by Motion (Framer Motion).
+---
+
+import { TypeTable } from 'fumadocs-ui/components/type-table';
+
+<ComponentPreview name="carousel-motion-demo" />
+
+## Installation
+
+<CodeBlockCommand component="carousel-motion" />
+
+---
+
+## Usage
+
+```tsx
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNavigation,
+  CarouselIndicator,
+} from "@/components/ui/carousel-motion";
+```
+
+```tsx
+<Carousel>
+  <CarouselContent>
+    <CarouselItem>Slide 1</CarouselItem>
+    <CarouselItem>Slide 2</CarouselItem>
+    <CarouselItem>Slide 3</CarouselItem>
+  </CarouselContent>
+  <CarouselNavigation />
+  <CarouselIndicator />
+</Carousel>
+```
+
+---
+
+## Examples
+
+### Basic
+
+<ComponentPreview name="carousel-motion-demo" />
+
+### Custom Indicator
+
+Use controlled state with `index` and `onIndexChange` to build custom indicators.
+
+<ComponentPreview name="carousel-motion-custom-indicator-demo" />
+
+### Loop
+
+Enable looping with the `loop` prop. When reaching the last slide, navigating forward jumps back to the first slide.
+
+<ComponentPreview name="carousel-motion-loop-demo" />
+
+### Vertical
+
+Use `orientation="vertical"` for vertical sliding. The container must have an explicit height.
+
+<ComponentPreview name="carousel-motion-vertical-demo" />
+
+### Sizes and Spacing
+
+Use `-ml-4` on `CarouselContent` and `pl-4` on `CarouselItem` to add spacing between items. Use `basis-1/3` (or other values) to show multiple items at once.
+
+<ComponentPreview name="carousel-motion-spacing-demo" />
+
+### Autoplay
+
+Use the `useCarouselAutoplay` hook to automatically advance slides. The hook provides `play`, `pause`, and `toggle` controls.
+
+<ComponentPreview name="carousel-motion-autoplay-demo" />
+
+### Spring Customization
+
+Customize the spring physics by passing a `transition` prop to `CarouselContent`. Adjust `stiffness` and `damping` to control the animation feel.
+
+<ComponentPreview name="carousel-motion-spring-demo" />
+
+---
+
+## API Reference
+
+### Carousel
+
+The root component that provides context for the carousel.
+
+<TypeTable
+  type={{
+    initialIndex: {
+      description: 'The initial slide index',
+      type: 'number',
+      default: '0',
+    },
+    index: {
+      description: 'Controlled slide index',
+      type: 'number',
+    },
+    onIndexChange: {
+      description: 'Callback when slide changes',
+      type: '(index: number) => void',
+    },
+    disableDrag: {
+      description: 'Disable drag-to-navigate',
+      type: 'boolean',
+      default: 'false',
+    },
+    loop: {
+      description: 'Enable looping (jumps back to start)',
+      type: 'boolean',
+      default: 'false',
+    },
+    orientation: {
+      description: 'Slide direction',
+      type: "'horizontal' | 'vertical'",
+      default: "'horizontal'",
+    },
+    className: {
+      description: 'Additional CSS classes',
+      type: 'string',
+    },
+  }}
+/>
+
+### CarouselContent
+
+Container for carousel items with drag and spring animation support.
+
+<TypeTable
+  type={{
+    transition: {
+      description: 'Motion transition options (spring or tween)',
+      type: 'Transition',
+      default: '{ type: "spring", stiffness: 90, damping: 18 }',
+    },
+    className: {
+      description: 'Additional CSS classes',
+      type: 'string',
+    },
+  }}
+/>
+
+### CarouselItem
+
+Individual slide wrapper.
+
+<TypeTable
+  type={{
+    className: {
+      description: 'Additional CSS classes',
+      type: 'string',
+    },
+  }}
+/>
+
+### CarouselNavigation
+
+Previous/next navigation buttons.
+
+<TypeTable
+  type={{
+    alwaysShow: {
+      description: 'Always show navigation (vs. hover)',
+      type: 'boolean',
+      default: 'false',
+    },
+    className: {
+      description: 'Container CSS classes',
+      type: 'string',
+    },
+    classNameButton: {
+      description: 'Button CSS classes',
+      type: 'string',
+    },
+  }}
+/>
+
+### CarouselIndicator
+
+Dot indicators showing current slide position.
+
+<TypeTable
+  type={{
+    className: {
+      description: 'Container CSS classes',
+      type: 'string',
+    },
+    classNameButton: {
+      description: 'Dot button CSS classes',
+      type: 'string',
+    },
+  }}
+/>
+
+### useCarousel
+
+Hook to access carousel state and controls.
+
+```tsx
+const { index, setIndex, itemsCount } = useCarousel();
+```
+
+### useCarouselAutoplay
+
+Hook to enable automatic slide advancement.
+
+```tsx
+const { isPlaying, play, pause, toggle } = useCarouselAutoplay({
+  interval: 3000,
+  autoStart: true,
+});
+```
+
+<TypeTable
+  type={{
+    interval: {
+      description: 'Time between slides (ms)',
+      type: 'number',
+      default: '3000',
+    },
+    autoStart: {
+      description: 'Start playing immediately',
+      type: 'boolean',
+      default: 'true',
+    },
+  }}
+/>
+
+**Returns:**
+
+<TypeTable
+  type={{
+    isPlaying: {
+      description: 'Current playing state',
+      type: 'boolean',
+    },
+    play: {
+      description: 'Start auto-play',
+      type: '() => void',
+    },
+    pause: {
+      description: 'Pause auto-play',
+      type: '() => void',
+    },
+    toggle: {
+      description: 'Toggle play/pause',
+      type: '() => void',
+    },
+  }}
+/>
+
+---
+
+## Comparison with Carousel (CSS)
+
+This component uses Motion (Framer Motion) for spring-based animations. Choose this version if:
+
+- You want smoother, physics-based animations
+- You need fine-grained control over animation timing (stiffness, damping)
+- You're already using Motion in your project
+
+For a lighter bundle without animation dependencies, consider using [Carousel](/docs/components/carousel) which uses CSS transitions.

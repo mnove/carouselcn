@@ -81,4 +81,46 @@ export const components: Record<
     ),
     src: "components/demo/example-autoplay-gallery.tsx",
   },
+  "carousel-motion-demo": {
+    component: React.lazy(
+      () => import("@/components/demo/carousel-motion-demo"),
+    ),
+    src: "components/demo/carousel-motion-demo.tsx",
+  },
+  "carousel-motion-loop-demo": {
+    component: React.lazy(
+      () => import("@/components/demo/carousel-motion-loop-demo"),
+    ),
+    src: "components/demo/carousel-motion-loop-demo.tsx",
+  },
+  "carousel-motion-vertical-demo": {
+    component: React.lazy(
+      () => import("@/components/demo/carousel-motion-vertical-demo"),
+    ),
+    src: "components/demo/carousel-motion-vertical-demo.tsx",
+  },
+  "carousel-motion-spacing-demo": {
+    component: React.lazy(
+      () => import("@/components/demo/carousel-motion-spacing-demo"),
+    ),
+    src: "components/demo/carousel-motion-spacing-demo.tsx",
+  },
+  "carousel-motion-autoplay-demo": {
+    component: React.lazy(
+      () => import("@/components/demo/carousel-motion-autoplay-demo"),
+    ),
+    src: "components/demo/carousel-motion-autoplay-demo.tsx",
+  },
+  "carousel-motion-spring-demo": {
+    component: React.lazy(
+      () => import("@/components/demo/carousel-motion-spring-demo"),
+    ),
+    src: "components/demo/carousel-motion-spring-demo.tsx",
+  },
+  "carousel-motion-custom-indicator-demo": {
+    component: React.lazy(
+      () => import("@/components/demo/carousel-motion-custom-indicator-demo"),
+    ),
+    src: "components/demo/carousel-motion-custom-indicator-demo.tsx",
+  },
 };

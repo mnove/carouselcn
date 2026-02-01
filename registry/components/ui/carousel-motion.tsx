@@ -6,6 +6,7 @@ import {
   ChevronRight,
   ChevronUp,
 } from "lucide-react";
+import { motion, useMotionValue, type Transition } from "motion/react";
 import {
   Children,
   ReactNode,
@@ -31,6 +32,7 @@ export type CarouselContextType = {
 const CarouselContext = createContext<CarouselContextType | undefined>(
   undefined,
 );
+
 function useCarousel() {
   const context = useContext(CarouselContext);
   if (!context) {
@@ -277,26 +279,29 @@ function CarouselIndicator({
 export type CarouselContentProps = {
   children: ReactNode;
   className?: string;
-  transition?: {
-    duration?: number;
-    ease?: string;
-  };
+  transition?: Transition;
+};
+
+const DEFAULT_TRANSITION: Transition = {
+  type: "spring",
+  stiffness: 90,
+  damping: 18,
+  duration: 0.2,
 };
 
 function CarouselContent({
   children,
   className,
-  transition,
+  transition = DEFAULT_TRANSITION,
 }: CarouselContentProps) {
   const { index, setIndex, setItemsCount, disableDrag, loop, orientation } =
     useCarousel();
   const [visibleItemsCount, setVisibleItemsCount] = useState(1);
   const containerRef = useRef<HTMLDivElement>(null);
-  const dragStart = useRef<number | null>(null);
   const isVertical = orientation === "vertical";
 
-  const childrenArray = Children.toArray(children);
-  const itemsLength = childrenArray.length;
+  const dragValue = useMotionValue(0);
+  const itemsLength = Children.count(children);
 
   // Detect visible items using IntersectionObserver
   useEffect(() => {
@@ -328,87 +333,48 @@ function CarouselContent({
     setItemsCount(itemsLength);
   }, [itemsLength, setItemsCount]);
 
-  const handleDragStart = (position: number) => {
-    if (disableDrag) return;
-    dragStart.current = position;
-  };
+  const onDragEnd = () => {
+    const dragOffset = dragValue.get();
 
-  const handleDragEnd = (position: number) => {
-    if (disableDrag || dragStart.current === null) return;
-
-    const diff = dragStart.current - position;
-
-    if (diff > 50) {
-      if (index < itemsLength - 1) {
-        setIndex(index + 1);
-      } else if (loop) {
+    if (dragOffset <= -10 && index < itemsLength - 1) {
+      setIndex(index + 1);
+    } else if (dragOffset >= 10 && index > 0) {
+      setIndex(index - 1);
+    } else if (loop) {
+      if (dragOffset <= -10 && index === itemsLength - 1) {
         setIndex(0);
-      }
-    } else if (diff < -50) {
-      if (index > 0) {
-        setIndex(index - 1);
-      } else if (loop) {
+      } else if (dragOffset >= 10 && index === 0) {
         setIndex(itemsLength - 1);
       }
     }
-
-    dragStart.current = null;
   };
 
-  const getPosition = (e: React.MouseEvent | React.Touch) => {
-    return isVertical ? e.clientY : e.clientX;
-  };
-
-  const handleMouseDown = (e: React.MouseEvent) => {
-    handleDragStart(getPosition(e));
-  };
-
-  const handleMouseUp = (e: React.MouseEvent) => {
-    handleDragEnd(getPosition(e));
-  };
-
-  const handleMouseLeave = (e: React.MouseEvent) => {
-    if (dragStart.current !== null) {
-      handleDragEnd(getPosition(e));
-    }
-  };
-
-  const handleTouchStart = (e: React.TouchEvent) => {
-    handleDragStart(getPosition(e.touches[0]));
-  };
-
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    handleDragEnd(getPosition(e.changedTouches[0]));
-  };
-
-  const duration = transition?.duration ?? 300;
-  const ease = transition?.ease ?? "ease-out";
-
-  const transform = isVertical
-    ? `translateY(-${index * (100 / visibleItemsCount)}%)`
-    : `translateX(-${index * (100 / visibleItemsCount)}%)`;
+  const dragDirection = isVertical ? "y" : "x";
+  const animateValue = isVertical
+    ? { translateY: `-${index * (100 / visibleItemsCount)}%` }
+    : { translateX: `-${index * (100 / visibleItemsCount)}%` };
 
   return (
-    <div
+    <motion.div
       ref={containerRef}
+      drag={disableDrag ? false : dragDirection}
+      dragConstraints={
+        disableDrag ? undefined : { left: 0, right: 0, top: 0, bottom: 0 }
+      }
+      dragMomentum={disableDrag ? undefined : false}
+      style={disableDrag ? undefined : { [dragDirection]: dragValue }}
+      animate={animateValue}
+      onDragEnd={disableDrag ? undefined : onDragEnd}
+      transition={transition}
       className={cn(
         "flex h-full",
         isVertical ? "flex-col" : "items-center",
         !disableDrag && "cursor-grab active:cursor-grabbing",
         className,
       )}
-      style={{
-        transform,
-        transition: `transform ${duration}ms ${ease}`,
-      }}
-      onMouseDown={handleMouseDown}
-      onMouseUp={handleMouseUp}
-      onMouseLeave={handleMouseLeave}
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
     >
       {children}
-    </div>
+    </motion.div>
   );
 }
 
@@ -422,7 +388,7 @@ function CarouselItem({ children, className }: CarouselItemProps) {
   const isVertical = orientation === "vertical";
 
   return (
-    <div
+    <motion.div
       className={cn(
         "shrink-0 grow-0 overflow-hidden",
         isVertical ? "h-full min-h-0 w-full" : "min-w-0 w-full",
@@ -430,7 +396,7 @@ function CarouselItem({ children, className }: CarouselItemProps) {
       )}
     >
       {children}
-    </div>
+    </motion.div>
   );
 }
 

@@ -69,34 +69,6 @@ export function CodeBlockCommand({
             code={getInstallationCommand(tab.value, registryUrl) || ""}
             className="bg-muted/50 shadow-sm/5 *:first:top-3"
           />
-
-          {/* {!isShadcnComponent && (
-            <>
-              <div className="my-6 flex items-center justify-center gap-2 overflow-hidden">
-                <Separator />
-                <span className="text-sm text-muted-foreground uppercase">
-                  or
-                </span>
-                <Separator />
-              </div>
-
-              <p className="text-sm text-muted-foreground">
-                If you are using a namespaced registry, you can use the
-                following command:
-              </p>
-
-              <CodeBlock
-                lang="bash"
-                code={
-                  getInstallationCommand(
-                    tab.value,
-                    `@carouselcn/${component}`,
-                  ) || ""
-                }
-                className="bg-muted/50 shadow-sm/5 *:first:top-3"
-              />
-            </>
-          )} */}
         </TabsContent>
       ))}
     </Tabs>

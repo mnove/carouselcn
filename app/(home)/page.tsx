@@ -64,7 +64,7 @@ export default function HomePage() {
       </section>
 
       {/* Examples Grid */}
-      <section className="py-12 md:py-16">
+      <section className="py-6 md:py-8">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
           Examples
         </h2>
@@ -74,7 +74,7 @@ export default function HomePage() {
             return (
               <div
                 key={example.title}
-                className="border border-border/40 rounded-xl p-6 lg:p-8"
+                className="border  rounded-xl p-6 lg:p-8 bg-card/30"
               >
                 <h3 className="text-xl font-semibold mb-2 text-center">
                   {example.title}

@@ -68,3 +68,9 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines on adding features, demo
 ## License
 
 MIT
+
+---
+
+Created by [mnove](https://github.com/mnove).
+
+Check out more of my work at [marcellonovelli.com](https://marcellonovelli.com).

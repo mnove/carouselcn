@@ -325,26 +325,31 @@ function CarouselContent({
     return () => observer.disconnect();
   }, [children]);
 
+  // Calculate max valid index based on visible items
+  const maxIndex = Math.max(0, itemsLength - visibleItemsCount);
+
   useEffect(() => {
     if (!itemsLength) {
       return;
     }
 
-    setItemsCount(itemsLength);
-  }, [itemsLength, setItemsCount]);
+    // Set page count (number of valid positions), not item count
+    const pageCount = maxIndex + 1;
+    setItemsCount(pageCount);
+  }, [itemsLength, visibleItemsCount, maxIndex, setItemsCount]);
 
   const onDragEnd = () => {
     const dragOffset = dragValue.get();
 
-    if (dragOffset <= -10 && index < itemsLength - 1) {
+    if (dragOffset <= -10 && index < maxIndex) {
       setIndex(index + 1);
     } else if (dragOffset >= 10 && index > 0) {
       setIndex(index - 1);
     } else if (loop) {
-      if (dragOffset <= -10 && index === itemsLength - 1) {
+      if (dragOffset <= -10 && index === maxIndex) {
         setIndex(0);
       } else if (dragOffset >= 10 && index === 0) {
-        setIndex(itemsLength - 1);
+        setIndex(maxIndex);
       }
     }
   };

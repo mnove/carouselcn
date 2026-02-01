@@ -320,13 +320,18 @@ function CarouselContent({
     return () => observer.disconnect();
   }, [children]);
 
+  // Calculate max valid index based on visible items
+  const maxIndex = Math.max(0, itemsLength - visibleItemsCount);
+
   useEffect(() => {
     if (!itemsLength) {
       return;
     }
 
-    setItemsCount(itemsLength);
-  }, [itemsLength, setItemsCount]);
+    // Set page count (number of valid positions), not item count
+    const pageCount = maxIndex + 1;
+    setItemsCount(pageCount);
+  }, [itemsLength, visibleItemsCount, maxIndex, setItemsCount]);
 
   const handleDragStart = (position: number) => {
     if (disableDrag) return;
@@ -339,7 +344,7 @@ function CarouselContent({
     const diff = dragStart.current - position;
 
     if (diff > 50) {
-      if (index < itemsLength - 1) {
+      if (index < maxIndex) {
         setIndex(index + 1);
       } else if (loop) {
         setIndex(0);
@@ -348,7 +353,7 @@ function CarouselContent({
       if (index > 0) {
         setIndex(index - 1);
       } else if (loop) {
-        setIndex(itemsLength - 1);
+        setIndex(maxIndex);
       }
     }
 

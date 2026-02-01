@@ -1,12 +1,13 @@
 import { siteConfig } from "@/config/site";
 import { RootProvider } from "fumadocs-ui/provider/next";
 import { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Lato, Bricolage_Grotesque } from "next/font/google";
 import Script from "next/script";
 import "./global.css";
 
-const inter = Inter({
+const bricolageGrotesque = Bricolage_Grotesque({
   subsets: ["latin"],
+  weight: ["400", "700"],
 });
 
 export const metadata: Metadata = {
@@ -25,7 +26,7 @@ export default function Layout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={inter.className}
+      className={bricolageGrotesque.className}
       suppressHydrationWarning
       data-website-id={siteConfig.analyticsTrackingId}
     >

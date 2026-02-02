@@ -81,6 +81,22 @@ export const components: Record<
     ),
     src: "components/demo/example-autoplay-gallery.tsx",
   },
+  "example-blog-cards": {
+    component: React.lazy(() => import("@/components/demo/example-blog-cards")),
+    src: "components/demo/example-blog-cards.tsx",
+  },
+  "example-team-profiles": {
+    component: React.lazy(
+      () => import("@/components/demo/example-team-profiles"),
+    ),
+    src: "components/demo/example-team-profiles.tsx",
+  },
+  "example-stats-cards": {
+    component: React.lazy(
+      () => import("@/components/demo/example-stats-cards"),
+    ),
+    src: "components/demo/example-stats-cards.tsx",
+  },
   "carousel-motion-demo": {
     component: React.lazy(
       () => import("@/components/demo/carousel-motion-demo"),

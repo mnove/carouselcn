@@ -5,7 +5,6 @@ import {
   CarouselContent,
   CarouselItem,
   CarouselNavigation,
-  CarouselIndicator,
 } from "@/registry/components/ui/carousel";
 
 const testimonials = [
@@ -34,8 +33,8 @@ const testimonials = [
 
 export default function ExampleTestimonials() {
   return (
-    <div className="relative w-full max-w-lg pb-6">
-      <Carousel>
+    <div className="relative w-full max-w-lg">
+      <Carousel className="pb-12">
         <CarouselContent>
           {testimonials.map((testimonial, index) => (
             <CarouselItem key={index} className="p-4">
@@ -52,7 +51,7 @@ export default function ExampleTestimonials() {
                   ))}
                 </div>
                 <blockquote className="text-lg leading-relaxed text-zinc-700 dark:text-zinc-300">
-                  "{testimonial.quote}"
+                  &quot;{testimonial.quote}&quot;
                 </blockquote>
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-200 text-sm font-medium dark:bg-zinc-700">
@@ -73,7 +72,7 @@ export default function ExampleTestimonials() {
           ))}
         </CarouselContent>
         <CarouselNavigation
-          className="absolute -bottom-2 left-auto top-auto w-full justify-center gap-2"
+          className="absolute -bottom-2 left-1/2 top-auto w-auto -translate-x-1/2 justify-center gap-2"
           alwaysShow
         />
       </Carousel>

@@ -75,9 +75,11 @@ function CarouselProvider({
     [onIndexChange],
   );
 
-  useEffect(() => {
+  const [prevInitialIndex, setPrevInitialIndex] = useState(initialIndex);
+  if (initialIndex !== prevInitialIndex) {
+    setPrevInitialIndex(initialIndex);
     setIndex(initialIndex);
-  }, [initialIndex]);
+  }
 
   const contextValue = useMemo(
     () => ({
